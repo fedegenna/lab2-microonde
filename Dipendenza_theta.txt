@@ -6,4 +6,5 @@
 50: 0.02 V   -50: 0.01
 60: 0.00 V   -60: 0.00
 
+Entro 4 gradi l'onda è approssimabile una sfera; infatti, non si apprezza un cambiamento del segnale
 
