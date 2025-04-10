@@ -1,0 +1,21 @@
+(utilizzato amperometro e voltimetro) (riflessione dell'onda polarizzata nel parallelo, ortogonale (polarizzazione 1,2) al tavolo) (in offset 1x)
+theta || corrente polarizzarione 1, 2 || voltaggio polarizz 1,2 :
+35  || 0.2 || 0.92
+40 || 0.18 || 0.87
+41 || 0.12 || 0.56
+42 || 0.08 ||0.49
+43 ||0.06, 0 || 0.39
+44 ||0.04, 0  || 0.29
+45 || 0.02 || 0.24
+46 ||0.02 || 0.22
+47 || 0.02 || 0.20
+48 || 0.04 || 0.27
+50 || 0.1 || 0.58
+53 || 0.08 || 0.49
+54 || 0.04 ||0.32
+55 || 0.02 || 0.17
+56 ||  || 0.08
+57 || || 0.05 
+58 || || 0.06, 0.04
+59 || || 0.12, 0.13
+60 || || 0.18, 0.11
