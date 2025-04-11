@@ -1,8 +1,8 @@
 distanza tra sorgenti:
-102.3 - 17...(presa in Brewster)
+102.3 - 17.9
 cateto sx:
 50 cm
 cate dx:
-per differenza
+34.4 cm
 distanza specchio (cateto verticale) || voltaggio: (togliere dalle misure 111 cm)
 
