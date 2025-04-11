@@ -1,0 +1,73 @@
+spessore fenditura: (sensibilità 1mm)
+1.5
+distanza fenditure: (a cui è da aggiungere metà spessore per ogni fenditura)
+5.9 
+lunghezza d'onda tabulata:
+2.85 cm
+(polarizzazione parallela al piano d'incidenza):
+ 
+angoli || voltaggio (V):
+0 || 1.85
+5 || 1.11
+10 || 0.08
+15 || 0.09
+20 || 0.60
+21 || 0.59
+22 || 0.66
+23 || 0.75
+24 || 0.85
+25 || 0.93
+26 || 0.97
+27 || 0.92
+28 || 0.72
+29 || 0.58
+30 || 0.38
+35 || 0.04
+40 || 0.19
+45 || 0.55
+47 || 0.63
+48 || 0.62
+49 || 
+
+
+seconda prova (piccola sbatti dati da cavi): solo max non minimi, direi che il voltaggio balla circa di 0.03 V, sui millivolt (ossia zona minimi) invece più o meno 0.01 V
+0 || 1.30
+1 || 1.25
+2 || 1.21
+3 || 1.07
+4 || 0.98
+5 || 0.87
+10 || 0.08
+15 || 0.07
+20 || 0.66
+21 || 0.71
+22 || 0.74
+23 || 0.80
+24 || 0.92
+25 || 0.97
+26 || 0.96
+27 || 0.89
+28 || 0.76
+29 || 0.64
+30 || 0.42
+35 || 0.07
+40 || 0.20
+45 || 0.57
+46 || 0.56
+47 || 0.55
+48 || 0.62
+49 || 0.64
+50 || 0.61
+51 || 0.60
+52 || 0.66
+53 || 0.63
+54 || 0.60
+55 || 0.56
+60 || 0.37
+65 || 0.20
+70 || 0.05
+si nota che qui non ha tanto senso la richiesta di variare il cammino ottico fissato un max
+
+
+ 
+  
