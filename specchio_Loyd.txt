@@ -1,8 +1,7 @@
-distanza tra sorgenti:
-102.3 - 17.9
-cateto sx:
-50 cm
-cate dx:
-34.4 cm
-distanza specchio (cateto verticale) || voltaggio: (togliere dalle misure 111 cm)
+cateti:
+34 cm
 
+Misure distanza specchio (bisogna togliere 111cm) cm:
+120, 121, 121.6, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 
+segnale V (pm 0.02V):
+2.09, 1.67, 1.57, 1.54, 1.80, 2.05, 1.93, 1.79, 1.86, 1.96, 1.81, 1.83, 1.88, 1.83, 1.88, 1.83, 1.87, 1.83, 1.87, 1.88, 1.86, 
