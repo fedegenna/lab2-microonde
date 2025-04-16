@@ -1,7 +1,7 @@
 
 distanza tra i centri delle palline:
 d = 4cm (per fabrizio 3.8/3.9)
-
+PRENDIAMO 3.8
 Set 1
 angoli | segnale (3x):
 0| 0.86
