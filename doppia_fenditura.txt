@@ -1,7 +1,7 @@
 spessore fenditura: (sensibilità 1mm)
 1.5
 distanza fenditure: (a cui è da aggiungere metà spessore per ogni fenditura)
-5.9 
+5.7
 lunghezza d'onda tabulata:
 2.85 cm
 (polarizzazione parallela al piano d'incidenza):
