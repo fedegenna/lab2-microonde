@@ -65,9 +65,9 @@ def main():
     ax.plot(R_fit, model_1_over_R2(R_fit, minuit_1_over_R2.values["a"], minuit_1_over_R2.values["b"]), label="Modello 1/R^2", color="green")
     ax.plot(R_fit, model_intermediate(R_fit, minuit_intermediate.values["a"], minuit_intermediate.values["b"], minuit_intermediate.values["c"]), label=f"Modello 1/R^c (c={minuit_intermediate.values['c']:.2f})", color="blue")
 
-    ax.set_xlabel("Raggio R")
-    ax.set_ylabel("Misura M")
-    ax.set_title("Interpolazione di M in funzione di R")
+    ax.set_xlabel("Raggio R dei massimi [cm]")
+    ax.set_ylabel("Misura del segnale [V]")
+    ax.set_title("Interpolazione del segnale in funzione di R")
     ax.legend()
     plt.show()
     print(M)
