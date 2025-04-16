@@ -4,6 +4,7 @@ distanza fenditure: (a cui è da aggiungere metà spessore per ogni fenditura)
 5.7
 lunghezza d'onda tabulata:
 2.85 cm
+d = 7.2
 (polarizzazione parallela al piano d'incidenza):
  
 angoli || voltaggio (V):
