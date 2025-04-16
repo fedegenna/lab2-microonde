@@ -1,0 +1,3 @@
+Lunghezza d'onda: 0.0295 m
+Errore sulla lunghezza d'onda: 0.0008 m
+Compatibilità: 1.2249 sigma
