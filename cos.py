@@ -5,18 +5,23 @@ from iminuit.cost import LeastSquares
 from scipy.stats import chi2
 
 # Modelli di dipendenza
+def model_cos_theta(cos_theta, a, b):
+    return a * cos_theta + b
 
-def model_1_over_cos2(cos_theta, a, b):
-    return a * (cos_theta **2) + b
+def model_cos_theta_squared(cos_theta, a, b):
+    return a * cos_theta**2 + b
 
+def model_intermediate(cos_theta, a, b, c):
+    return a * cos_theta**c + b
 
 def main():
-    theta = np.linspace(0, np.pi / 2, 19)  # Angoli in radianti
-    err_theta = 5 * np.pi / 180 * np.ones(len(theta))  # Errori associati agli angoli
+    # Dati simulati (sostituisci con i tuoi dati reali)
+    theta = np.linspace(0, np.pi / 2, 17)  # Angoli in radianti
+    err_theta = 1 * np.pi / 180 * np.ones(len(theta))  # Errori associati agli angoli
     cos_theta = np.cos(theta)  # Calcolo di cos(theta)
     err_cos_theta = np.abs(np.sin(theta) * err_theta)  # Propagazione degli errori su cos(theta)
 
-    M_repeated = [
+    M_repeated = np.array([
         [2.23, 2.18, 2.13],  # Misure ripetute per θ=0
         [2.22, 2.16, 2.12],  # Misure ripetute per θ=1
         [2.18, 2.11, 2.08],  # Misure ripetute per θ=2
@@ -34,57 +39,65 @@ def main():
         [0.42, 0.33, 0.38],  # Misure ripetute per θ=14
         [0.22, 0.17, 0.21],  # Misure ripetute per θ=15
         [0.09, 0.06, 0.08],  # Misure ripetute per θ=16
-        [0.01, 0.01, 0.02],  # Misure ripetute per θ=17
-        [0.00, 0.00, 0.00],  # Misure ripetute per θ=18
-    ]
+    ])
+    M = np.mean(M_repeated, axis=1)  # Media delle misure
+    err_M = np.std(M_repeated, axis=1, ddof=1) / np.sqrt(M_repeated.shape[1])  # Deviazione standard della media
 
-    M = []  # Lista per le medie
-    err_M = []  # Lista per gli errori delle medie
+    # Funzione di costo modificata per includere gli errori su cos(theta)
+    def cost_function(cos_theta, M, err_M, err_cos_theta, model, *params):
+        residuals = (M - model(cos_theta, *params)) / err_M
+        penalty = (err_cos_theta / err_M) ** 2
+        return np.sum(residuals**2 + penalty)
 
-    for r in M_repeated:
-        m = np.mean(r)
-        err_m = np.std(r) / np.sqrt(3)
-        M.append(m)
-        err_M.append(err_m)
+    # Fit con il modello cos(theta)
+    least_squares_cos_theta = LeastSquares(cos_theta[:len(M)], M, err_M, model_cos_theta)
+    minuit_cos_theta = Minuit(least_squares_cos_theta, a=2, b=0.1)
+    minuit_cos_theta.migrad()
+    chi2_cos_theta = minuit_cos_theta.fval
+    ndof_cos_theta = len(M) - len(minuit_cos_theta.values)
+    p_value_cos_theta = 1 - chi2.cdf(chi2_cos_theta, ndof_cos_theta)
 
-    M = np.array(M)
-    err_M = np.array(err_M)
+    # Fit con il modello cos(theta)^2
+    
+    least_squares_cos_theta_squared = LeastSquares(cos_theta[:len(M)], M, err_M, model_cos_theta_squared)
+    minuit_cos_theta_squared = Minuit(least_squares_cos_theta_squared, a=1, b=0)
+    minuit_cos_theta_squared.migrad()
+    chi2_cos_theta_squared = minuit_cos_theta_squared.fval
+    ndof_cos_theta_squared = len(M) - len(minuit_cos_theta_squared.values)
+    p_value_cos_theta_squared = 1 - chi2.cdf(chi2_cos_theta_squared, ndof_cos_theta_squared)
 
-    # Fit con il modello 1/R^2
-    least_squares_1_over_cos2 = LeastSquares(cos_theta, M, err_M, model_1_over_cos2)
-    minuit_1_over_cos2 = Minuit(least_squares_1_over_cos2, a=10, b=-5)
-    minuit_1_over_cos2.migrad()
-    chi2_1_over_cos2 = minuit_1_over_cos2.fval
-    ndof_1_over_cos2 = len(M) - len(minuit_1_over_cos2.values)
-    p_value_1_over_cos2 = 1 - chi2.cdf(chi2_1_over_cos2, ndof_1_over_cos2)
-
-
+    # Fit con il modello intermedio
+    least_squares_intermediate = LeastSquares(cos_theta[:len(M)], M, err_M, model_intermediate)
+    minuit_intermediate = Minuit(least_squares_intermediate, a=1, b=0, c=2)
+    minuit_intermediate.migrad()
+    chi2_intermediate = minuit_intermediate.fval
+    ndof_intermediate = len(M) - len(minuit_intermediate.values)
+    p_value_intermediate = 1 - chi2.cdf(chi2_intermediate, ndof_intermediate)
+    
     # Stampa dei risultati
+    print("Modello cos(θ):")
+    print(f"  χ² = {chi2_cos_theta:.2f}, gradi di libertà = {ndof_cos_theta}, p-value = {p_value_cos_theta:.4f}")
     
-    print("Modello cos²:")
-    print(f"  χ² = {chi2_1_over_cos2:.2f}, gradi di libertà = {ndof_1_over_cos2}, p-value = {p_value_1_over_cos2:.4f}")
+    print("Modello cos²(θ):")
+    print(f"  χ² = {chi2_cos_theta_squared:.2f}, gradi di libertà = {ndof_cos_theta_squared}, p-value = {p_value_cos_theta_squared:.4f}")
+    print("Modello cos^c(θ):")
+    print(f"  χ² = {chi2_intermediate:.2f}, gradi di libertà = {ndof_intermediate}, p-value = {p_value_intermediate:.4f}")
     
-    print(f"  a = {minuit_1_over_cos2.values['a']:.4f} ± {minuit_1_over_cos2.errors['a']:.4f}")
-    print(f"  b = {minuit_1_over_cos2.values['b']:.4f} ± {minuit_1_over_cos2.errors['b']:.4f}")
-
-
-    print("Stato del fit:", minuit_1_over_cos2.fmin.is_valid)
-
     # Grafico
     fig, ax = plt.subplots()
-    cos_fit = np.linspace(0, 1, 100)
+    cos_theta_fit = np.linspace(0, 1, 100)
 
-    ax.errorbar(cos_theta, M, xerr=err_cos_theta, yerr=err_M, fmt="o", label="Dati con errori")
+    ax.errorbar(cos_theta[:len(M)], M, xerr=err_cos_theta[:len(M)], yerr=err_M, fmt="o", label="Dati con errori")
+    ax.plot(cos_theta_fit, model_cos_theta(cos_theta_fit, minuit_cos_theta.values["a"], minuit_cos_theta.values["b"]), label="Modello cos(θ)", color="red")
     
-    ax.plot(cos_fit, model_1_over_cos2(cos_fit, minuit_1_over_cos2.values["a"], minuit_1_over_cos2.values["b"]), label="Modello cos^2", color="green")
+    ax.plot(cos_theta_fit, model_cos_theta_squared(cos_theta_fit, minuit_cos_theta_squared.values["a"], minuit_cos_theta_squared.values["b"]), label="Modello cos²(θ)", color="green")
+    ax.plot(cos_theta_fit, model_intermediate(cos_theta_fit, minuit_intermediate.values["a"], minuit_intermediate.values["b"], minuit_intermediate.values["c"]), label=f"Modello cos^c(θ) (c={minuit_intermediate.values['c']:.2f})", color="blue")
     
-    ax.set_xlabel("Cos(θ)")
-    ax.set_ylabel("Misura del segnale")
-    ax.set_title("Interpolazione del segnale in funzione di cos(θ)")
+    ax.set_xlabel("cos(θ)")
+    ax.set_ylabel("Misura M")
+    ax.set_title("Interpolazione di M in funzione di cos(θ)")
     ax.legend()
-    print("Valori di M:", M)
-    print("Valore massimo di M:", np.max(M))
     plt.show()
-    
+
 if __name__ == "__main__":
     main()
