@@ -15,7 +15,7 @@ def main():
     # Dati simulati (sostituisci con i tuoi dati reali)
     M_perpendicolare = [0.79, 0.70, 0.69, 0.78, 0.79, 0.80, 0.80] 
     M_parallelo = [0.92, 1.05, 1.09, 1.08, 1.07, 1.05, 1.04]
-    err_M = 0.1 * np.ones(len(M_perpendicolare))  
+    err_M = 0.01 * np.ones(len(M_perpendicolare))  
     theta = [50, 53, 54, 55, 56, 57, 58]
     err_theta = 1 * np.ones(len(theta))  # Errori associati ai raggi
 
