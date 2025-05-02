@@ -26,7 +26,7 @@ def main():
     err_theta = 5 * np.pi / 180 * np.ones(len(theta))  # Errori associati agli angoli
     cos_theta = np.cos(theta)  # Calcolo di cos(theta)
     err_cos_theta = np.abs(np.sin(theta) * err_theta)  # Propagazione degli errori su cos(theta)
-
+    print(theta)
     M_repeated = np.array([
         [2.23, 2.18, 2.13],  # Misure ripetute per θ=0
         [2.22, 2.16, 2.12],  # Misure ripetute per θ=1
@@ -73,13 +73,6 @@ def main():
     ndof_cos_theta_squared = len(M) - len(minuit_cos_theta_squared.values)
     p_value_cos_theta_squared = 1 - chi2.cdf(chi2_cos_theta_squared, ndof_cos_theta_squared)
 
-    # Fit con il modello intermedio
-    least_squares_intermediate = LeastSquares(cos_theta[:len(M)], M, err_M, model_intermediate)
-    minuit_intermediate = Minuit(least_squares_intermediate, a=1, b=0, c=2)
-    minuit_intermediate.migrad()
-    chi2_intermediate = minuit_intermediate.fval
-    ndof_intermediate = len(M) - len(minuit_intermediate.values)
-    p_value_intermediate = 1 - chi2.cdf(chi2_intermediate, ndof_intermediate)
     
     # Stampa dei risultati
     print("Modello cos(θ):")
@@ -89,8 +82,6 @@ def main():
     
     print("Modello cos²(θ):")
     print(f"  χ² = {chi2_cos_theta_squared:.2f}, gradi di libertà = {ndof_cos_theta_squared}, p-value = {p_value_cos_theta_squared:.4f}")
-    print("Modello cos^c(θ):")
-    print(f"  χ² = {chi2_intermediate:.2f}, gradi di libertà = {ndof_intermediate}, p-value = {p_value_intermediate:.4f}")
     
     # Grafico
     fig, ax = plt.subplots()
@@ -100,11 +91,25 @@ def main():
     ax.plot(cos_theta_fit, model_cos_theta(cos_theta_fit, minuit_cos_theta.values["a"], minuit_cos_theta.values["b"]), label="Modello cos(θ)", color="red")
     
     ax.plot(cos_theta_fit, model_cos_theta_squared(cos_theta_fit, minuit_cos_theta_squared.values["a"], minuit_cos_theta_squared.values["b"]), label="Modello cos²(θ)", color="green")
-    ax.plot(cos_theta_fit, model_intermediate(cos_theta_fit, minuit_intermediate.values["a"], minuit_intermediate.values["b"], minuit_intermediate.values["c"]), label=f"Modello cos^c(θ) (c={minuit_intermediate.values['c']:.2f})", color="blue")
+    # Calcolo del chi-quadro ridotto
+    chi2_reduced_cos_theta = chi2_cos_theta / ndof_cos_theta
+    chi2_reduced_cos_theta_squared = chi2_cos_theta_squared / ndof_cos_theta_squared
+
+# Aggiunta di p-value e chi-quadro ridotto al grafico
+    textstr = (
+        f"Modello cos(θ):\n"
+        f"  χ² ridotto = {chi2_reduced_cos_theta:.2f}\n"
+        f"  p-value = {p_value_cos_theta:.4f}\n\n"
+        f"Modello cos²(θ):\n"
+        f"  χ² ridotto = {chi2_reduced_cos_theta_squared:.2f}\n"
+        f"  p-value = {p_value_cos_theta_squared:.4f}"
+    )
+    ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.5))
+
     
     ax.set_xlabel("cos(θ)")
-    ax.set_ylabel("Misura M")
-    ax.set_title("Interpolazione di M in funzione di cos(θ)")
+    ax.set_ylabel("Segnale [V]")
+    ax.set_title("Interpolazione del segnale in funzione di cos(θ), prima iterazione")
     ax.legend()
     plt.show()
 
@@ -129,14 +134,14 @@ def main():
     ax.plot(cos_theta_fit, model_cos_theta(cos_theta_fit, minuit.values["a"], minuit.values["b"]), label="Modello cos(θ)", color="red")
     ax.set_xlabel("cos(θ)")
     ax.set_ylabel("Misura M")
-    ax.set_title("Interpolazione di M in funzione di cos(θ) con errori sulle y")
+    ax.set_title("Interpolazione di M in funzione di cos(θ), prima iterazione")
     ax.legend()
     plt.show()
     
     #altra interpolazione per aumentare la precisione:
     err_M_post_post = np.zeros(len(M))
     for i in range(len(M)):
-        err_M_post_post[i] = np.sqrt(err_M_post[i]**2+ error_model_cos_theta(cos_theta[i], minuit.values['a'], minuit.values['b'], err_cos_theta[i], minuit.errors['a'],minuit.errors['b'], minuit.covariance[0,1])**2)
+        err_M_post_post[i] = np.sqrt(err_M[i]**2+ error_model_cos_theta(cos_theta[i], minuit.values['a'], minuit.values['b'], err_cos_theta[i], minuit.errors['a'],minuit.errors['b'], minuit.covariance[0,1])**2)
     cost_func_post = LeastSquares(cos_theta[:len(M)], M, err_M_post_post, model_cos_theta)
     minuit_post = Minuit(cost_func_post, a=minuit.values["a"], b=minuit.values["b"])
     minuit_post.migrad()
@@ -151,10 +156,26 @@ def main():
     fig, ax = plt.subplots()
     ax.errorbar(cos_theta[:len(M)], M, xerr=err_cos_theta[:len(M)], yerr=err_M_post_post, fmt="o", label="Dati con errori")
     ax.plot(cos_theta_fit, model_cos_theta(cos_theta_fit, minuit_post.values["a"], minuit_post.values["b"]), label="Modello cos(θ)", color="red")
+    # Calcolo del chi-quadro ridotto
+    chi2_reduced_post = chi2_definitive_post / ndof_post
+
+# Aggiunta di p-value e chi-quadro ridotto al grafico
+    textstr = (
+    f"Modello cos(θ):\n"
+    f"  χ² ridotto = {chi2_reduced_post:.2f}\n"
+    f"  p-value = {p_value_post:.4f}"
+    )
+    ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.5))
+
     ax.set_xlabel("cos(θ)")
     ax.set_ylabel("Misura M")
-    ax.set_title("Interpolazione di M in funzione di cos(θ) con errori sulle y")
+    ax.set_title("Interpolazione del segnale in funzione di cos(θ) con errori sulle x")
     ax.legend()
     plt.show()
+    
 if __name__ == "__main__":
     main()
+
+    
+    
+  
